@@ -1,0 +1,12 @@
+// --------------------------------------------------------
+// Phantom programming language
+// https://github.com/notcl4y14/phantom-lang
+// --------------------------------------------------------
+
+// 2/7/2024
+- Initial release
+- Added Main.outputResult() method
+- Created Main.hx
+- Created source package
+	+ Token.hx
+	+ TokenType.hx
