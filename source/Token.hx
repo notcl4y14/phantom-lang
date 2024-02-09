@@ -9,11 +9,16 @@ class Token {
 		this.value = value;
 	}
 
+	///////////////////////
+
 	public function matches(type: TokenType, value: Any): Bool {
 		return this.type == type && this.value == value;
 	}
 
-	public function string(): String {
-		return 'Token { type: ${this.type}, value: ${this.value} }';
+	public function string(tab: Bool = true): String {
+		var value = this.value;
+		if (Std.isOfType(value, String)) value = '"${value}"';
+		if (tab) return 'Token { type: ${this.type},	value: ${value}	}';
+		return 'Token { type: ${this.type}, value: ${value} }';
 	}
 }

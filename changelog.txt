@@ -3,6 +3,13 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/9/2024
+- Created Lexer.hx
+- Added Token Types
+	+ Operator
+	+ Number
+- Token.string() has tabs and closes the strings with double quotes now
+
 // 2/7/2024
 - Initial release
 - Added Main.outputResult() method
