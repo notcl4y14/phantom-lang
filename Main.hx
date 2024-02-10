@@ -6,7 +6,13 @@ class Main {
 		var strings: Array<String> = [];
 		
 		for (token in result) {
-			strings.push(token.string());
+			var str = token.string();
+
+			if (str.length > lineWidth) {
+				lineWidth += str.length - lineWidth;
+			}
+
+			strings.push(str);
 		}
 
 		this.outputResult(name, strings, lineWidth);
@@ -33,7 +39,7 @@ class Main {
 		// Sys.println(token.string());
 		// Sys.println("----------------------------------------");
 		// this.outputResult("Tokens", [token.string()]);
-		var lexer = new Lexer("+-*/%^ 10 + 4 - 5");
+		var lexer = new Lexer("let x = \"Hello World! 'lol'\"; var y = 'a'; null, true, false");
 		var tokens = lexer.lexerize();
 
 		this.outputResultToString("Tokens", tokens);

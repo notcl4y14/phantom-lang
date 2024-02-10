@@ -18,7 +18,7 @@ class Token {
 	public function string(tab: Bool = true): String {
 		var value = this.value;
 		if (Std.isOfType(value, String)) value = '"${value}"';
-		if (tab) return 'Token { type: ${this.type},	value: ${value}	}';
+		if (tab) return 'Token { type: ${this.type},	value: ${value} }';
 		return 'Token { type: ${this.type}, value: ${value} }';
 	}
 }

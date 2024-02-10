@@ -17,9 +17,9 @@ class Lexer {
 		return this.code.charAt(this.pos);
 	}
 
-	public function yum(): String {
+	public function yum(delta: Int = 1): String {
 		var prev = this.at();
-		this.pos += 1;
+		this.pos += delta;
 		return prev;
 	}
 
@@ -35,10 +35,20 @@ class Lexer {
 		while (this.notEOF()) {
 			var char = this.at();
 
-			if (StringTools.contains("+-*/%^", char)) {
+			if (StringTools.contains(" \t\r\n", char)) {
+				// Do nothing
+			} else if (StringTools.contains("+-*/%^=<>", char)) {
 				tokens.push(new Token(TokenType.Operator, char));
+			} else if (StringTools.contains(".,:;!&|", char)) {
+				tokens.push(new Token(TokenType.Symbol, char));
+			} else if (StringTools.contains("()[]{}", char)) {
+				tokens.push(new Token(TokenType.Closure, char));
 			} else if (StringTools.contains("1234567890", char)) {
 				tokens.push(this.lexerizeNumber());
+			} else if (StringTools.contains("\"'", char)) {
+				tokens.push(this.lexerizeString());
+			} else {
+				tokens.push(this.lexerizeIdentifier());
 			}
 
 			this.yum();
@@ -62,7 +72,54 @@ class Lexer {
 			this.yum();
 		}
 
+		this.yum(-1);
+
 		if (float) return new Token(TokenType.Number, Std.parseFloat(numStr));
 		return new Token(TokenType.Number, Std.parseInt(numStr));
+	}
+
+	public function lexerizeString(): Token {
+		var str: String = "";
+		var quote: String = this.yum();
+
+		while (this.notEOF() && this.at() != quote) {
+			str += this.yum();
+		}
+
+		return new Token(TokenType.String, str);
+	}
+
+	public function lexerizeIdentifier(): Token {
+		var identStr: String = "";
+
+		while (this.notEOF() && !StringTools.contains(" \t\r\n+-*/%^=<>\\.,:;!&|()[]{}\"'", this.at())) {
+			identStr += this.yum();
+		}
+
+		this.yum(-1);
+
+		// switch (identStr) {
+		// 	case "let":
+		// 	case "var":
+		// 	case "if":
+		// 	case "else":
+		// 	case "for":
+		// 	case "while":
+		// 	case "function":
+		// 		return new Token(TokenType.Keyword, identStr);
+			
+		// 	case "null":
+		// 	case "true":
+		// 	case "false":
+		// 		return new Token(TokenType.Literal, identStr);
+		// }
+
+		if ((["let", "var", "if", "else", "for", "while", "function"].contains(identStr))) {
+			return new Token(TokenType.Keyword, identStr);
+		} else if ((["null", "true", "false"]).contains(identStr)) {
+			return new Token(TokenType.Literal, identStr);
+		}
+
+		return new Token(TokenType.Identifier, identStr);
 	}
 }

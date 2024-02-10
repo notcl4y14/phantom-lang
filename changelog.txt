@@ -3,6 +3,17 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/10/2024
+- Added more Token Types
+	+ String
+	+ Symbol
+	+ Closure
+	+ Identifier
+	+ Keyword
+	+ Literal
+- Added "=", "<" and ">" to the matching expression of Operator Token Type
+- Main.outputResultToString() now extends the lines if the result is long
+
 // 2/9/2024
 - Created Lexer.hx
 - Added Token Types
