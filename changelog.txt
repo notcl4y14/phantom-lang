@@ -3,6 +3,14 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/13/2024
+- Added comments
+- Added EOF
+- Created "tests" folder
+	+ test.pha
+	+ comments.pha
+- The language now reads and runs the files
+
 // 2/10/2024
 - Added more Token Types
 	+ String

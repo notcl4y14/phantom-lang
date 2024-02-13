@@ -13,7 +13,11 @@ class Lexer {
 
 	///////////////////////
 
-	public function at(): String {
+	public function at(range: Int = 1): String {
+		if (range > 1) {
+			return this.code.substr(this.pos, range);
+		}
+		
 		return this.code.charAt(this.pos);
 	}
 
@@ -22,6 +26,12 @@ class Lexer {
 		this.pos += delta;
 		return prev;
 	}
+
+	// public function yumRange(range: Int = 1): String {
+	// 	var prev = this.at(range);
+	// 	this.pos += range;
+	// 	return prev;
+	// }
 
 	public function notEOF(): Bool {
 		return this.pos < this.code.length;
@@ -37,6 +47,8 @@ class Lexer {
 
 			if (StringTools.contains(" \t\r\n", char)) {
 				// Do nothing
+			} else if ((["//", "/*"]).contains(this.at(2))) {
+				tokens.push(this.lexerizeComment());
 			} else if (StringTools.contains("+-*/%^=<>", char)) {
 				tokens.push(new Token(TokenType.Operator, char));
 			} else if (StringTools.contains(".,:;!&|", char)) {
@@ -54,7 +66,54 @@ class Lexer {
 			this.yum();
 		}
 
+		tokens.push(new Token(TokenType.EOF));
+
 		return tokens;
+	}
+
+	public function lexerizeComment(): Token {
+		var line = this.at(2) == "//";
+		var token: Token;
+
+		switch (line) {
+			case true: token = this.lexerizeComment_line();
+			case false: token = this.lexerizeComment_multiline();
+		}
+
+		return token;
+	}
+
+	public function lexerizeComment_line(): Token {
+		var comStr: String = "";
+
+		while (this.notEOF() && this.at() != "\n") {
+			if (this.at() == "\r") break;
+			comStr += this.yum();
+		}
+
+		return new Token(TokenType.Comment, comStr);
+	}
+	
+	public function lexerizeComment_multiline(): Token {
+		var comStr: String = "";
+		// var count: Int = 1;          // This is for multiline comment nesting
+
+		// while (this.notEOF() && count <= 0) {
+		while (this.notEOF() && this.at(2) != "*/") {
+			// if (this.at(2) == "/*") {
+			// 	count += 1;
+			// 	comStr += this.yumRange(2);
+			// 	continue;
+			// } else if (this.at(2) == "*/") {
+			// 	count -= 1;
+			// 	comStr += this.yumRange(2);
+			// 	continue;
+			// }
+
+			comStr += this.yum();
+		}
+
+		return new Token(TokenType.Comment, comStr);
 	}
 
 	public function lexerizeNumber(): Token {

@@ -1,3 +1,5 @@
+import sys.io.File;
+import sys.FileSystem;
 import source.*;
 
 class Main {
@@ -30,6 +32,14 @@ class Main {
 		Sys.print("\n");
 	}
 
+	public function readFile(filename: String = ""): Null<String> {
+		if (!FileSystem.exists(filename)) {
+			return null;
+		}
+
+		return File.getContent(filename);
+	}
+
 	///////////////////////
 	
 	public function new() {
@@ -39,7 +49,18 @@ class Main {
 		// Sys.println(token.string());
 		// Sys.println("----------------------------------------");
 		// this.outputResult("Tokens", [token.string()]);
-		var lexer = new Lexer("let x = \"Hello World! 'lol'\"; var y = 'a'; null, true, false");
+		var filename = Sys.args()[0];
+		var code = this.readFile(filename);
+
+		if (code == null) {
+			var error = filename != null
+				? 'File "${filename}" not found'
+				: 'Filename expected';
+			Sys.println(error);
+			Sys.exit(0);
+		}
+
+		var lexer = new Lexer(code);
 		var tokens = lexer.lexerize();
 
 		this.outputResultToString("Tokens", tokens);

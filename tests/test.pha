@@ -1,0 +1,4 @@
+let x = (10.4 + 4);
+let y = (x - 5);
+
+log.writeln(y);          // 9.4
