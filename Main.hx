@@ -1,3 +1,4 @@
+import source.nodes.Program;
 import sys.io.File;
 import sys.FileSystem;
 import source.*;
@@ -8,7 +9,7 @@ class Main {
 		var strings: Array<String> = [];
 		
 		for (token in result) {
-			var str = token.string();
+			var str = token.string(true);
 
 			if (str.length > lineWidth) {
 				lineWidth += str.length - lineWidth;
@@ -60,10 +61,17 @@ class Main {
 			Sys.exit(0);
 		}
 
-		var lexer = new Lexer(code);
+		var lexer = new Lexer(filename, code);
 		var tokens = lexer.lexerize();
 
 		this.outputResultToString("Tokens", tokens);
+
+		var parser = new Parser(tokens);
+		var ast = new Program();          // For compiler
+		try { ast = parser.parse(); }
+		catch (e: source.Error) { Sys.println(e.string()); Sys.exit(1); }
+
+		this.outputResult("AST", [ast.string()]);
 	}
 
 	static public function main() {
