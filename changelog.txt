@@ -3,6 +3,12 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/15/2024
+- Added more node types
+	+ StringLiteral
+	+ Literal
+	+ Identifier
+
 // 2/14/2024
 - Created Parser.hx
 - Created Position.hx

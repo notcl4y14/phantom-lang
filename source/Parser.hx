@@ -84,11 +84,17 @@ class Parser {
 	
 	///////////////////////
 
-	public function parse_primaryExpr() {
+	public function parse_primaryExpr(): Node {
 		var token = this.yum();
 
 		if (token.type == TokenType.Number) {
 			return new NumericLiteral(token.value);
+		} else if (token.type == TokenType.String) {
+			return new StringLiteral(token.value);
+		} else if (token.type == TokenType.Literal) {
+			return new Literal(token.value);
+		} else if (token.type == TokenType.Identifier) {
+			return new Identifier(token.value);
 		}
 
 		throw new source.Error('Unexpected token "${token.value}"', token.pos);
