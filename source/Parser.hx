@@ -65,10 +65,14 @@ class Parser {
 	///////////////////////
 
 	public function parse_expr() {
-		return this.parse_additiveExpr();
+		return this.parse_compExpr();
 	}
 	
 	///////////////////////
+
+	public function parse_compExpr() {
+		return this.parse_binaryExpr(["<", ">", "==", "!=", "<=", ">="], this.parse_additiveExpr);
+	}
 
 	public function parse_additiveExpr() {
 		return this.parse_binaryExpr(["+", "-"], this.parse_multExpr);
@@ -95,6 +99,19 @@ class Parser {
 			return new Literal(token.value);
 		} else if (token.type == TokenType.Identifier) {
 			return new Identifier(token.value);
+		} else if
+			(token.type == TokenType.Closure &&
+			token.value == "(")
+		{
+			var value = this.parse_expr();
+
+			if (!this.at().matches(TokenType.Closure, ")")) {
+				throw new source.Error('Expected closing parenthesis', this.at().pos);
+			}
+
+			this.yum();
+
+			return value;
 		}
 
 		throw new source.Error('Unexpected token "${token.value}"', token.pos);
