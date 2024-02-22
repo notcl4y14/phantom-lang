@@ -26,12 +26,12 @@ class Error {
 		var rightPos = this.pos[1];
 
 		var line = leftPos.line == rightPos.line
-			? '${leftPos.line}'
-			: '${leftPos.line}-${rightPos.line}';
+			? '${leftPos.line + 1}'
+			: '${leftPos.line + 1}-${rightPos.line + 1}';
 
 		var column = leftPos.column == rightPos.column
-			? '${leftPos.column}'
-			: '${leftPos.column}-${rightPos.column}';
+			? '${leftPos.column + 1}'
+			: '${leftPos.column + 1}-${rightPos.column + 1}';
 		
 		return '${leftPos.filename}: ${line} : ${column} : ${this.details}';
 	}

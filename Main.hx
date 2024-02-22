@@ -1,3 +1,4 @@
+import source.values.Value;
 import source.nodes.Program;
 import sys.io.File;
 import sys.FileSystem;
@@ -50,7 +51,8 @@ class Main {
 		// Sys.println(token.string());
 		// Sys.println("----------------------------------------");
 		// this.outputResult("Tokens", [token.string()]);
-		var filename = Sys.args()[0];
+		var args = Sys.args();
+		var filename = args[0];
 		var code = this.readFile(filename);
 
 		if (code == null) {
@@ -64,14 +66,30 @@ class Main {
 		var lexer = new Lexer(filename, code);
 		var tokens = lexer.lexerize();
 
-		this.outputResultToString("Tokens", tokens);
+		if (args.contains("--lexer")) {
+			this.outputResultToString("Tokens", tokens);
+		}
 
 		var parser = new Parser(tokens);
 		var ast = new Program();          // For compiler
 		try { ast = parser.parse(); }
 		catch (e: source.Error) { Sys.println(e.string()); Sys.exit(1); }
 
-		this.outputResult("AST", [ast.string()]);
+		if (args.contains("--parser")) {
+			this.outputResult("AST", [ast.string()]);
+		}
+
+		var interpeter = new Interpreter();
+		var result: Value = null;                // For compiler
+		try { result = interpeter.eval(ast); }
+		catch (e: source.Error) { Sys.println(e.string()); Sys.exit(1); }
+
+		if (args.contains("--eval-value") && result != null) {
+			// For compiler
+			// try {
+			this.outputResult("Evaluated value", [result.string()]);
+			// } catch(e) {}
+		}
 	}
 
 	static public function main() {

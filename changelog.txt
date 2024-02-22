@@ -3,6 +3,23 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/19/2024 - 2/22/2024
+- Added more value types
+	+ BooleanValue (boolean)
+	+ NullValue (null)
+------------
+------------
+------------
+------------
+- Added CLI parameters
+	+ --lexer: outputs lexer result (tokens)
+	+ --parser: outputs parser result (AST)
+- Created Interpreter.hx
+- Created values package
+	+ Value.hx
+	+ NumberValue.hx
+	+ StringValue.hx
+
 // 2/17/2024
 - Added comparisonal expression
 - Added parenthesised expression

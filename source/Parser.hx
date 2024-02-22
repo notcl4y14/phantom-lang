@@ -36,6 +36,11 @@ class Parser {
 		var program = new Program();
 
 		while (this.notEOF()) {
+			if (this.at().type == TokenType.Comment) {
+				this.yum();
+				continue;
+			}
+			
 			var expr = this.parse_expr();
 			if (expr != null) program.add(expr);
 		}
@@ -56,7 +61,7 @@ class Parser {
 			var op = this.yum();
 			var right = func();
 
-			left = new BinaryExpr(left, op, right);
+			left = new BinaryExpr(left, op, right).setPos(left.pos[0], right.pos[1]);
 		}
 
 		return left;
@@ -92,13 +97,13 @@ class Parser {
 		var token = this.yum();
 
 		if (token.type == TokenType.Number) {
-			return new NumericLiteral(token.value);
+			return new NumericLiteral(token.value).setPos(token.pos[0], token.pos[1]);
 		} else if (token.type == TokenType.String) {
-			return new StringLiteral(token.value);
+			return new StringLiteral(token.value).setPos(token.pos[0], token.pos[1]);
 		} else if (token.type == TokenType.Literal) {
-			return new Literal(token.value);
+			return new Literal(token.value).setPos(token.pos[0], token.pos[1]);
 		} else if (token.type == TokenType.Identifier) {
-			return new Identifier(token.value);
+			return new Identifier(token.value).setPos(token.pos[0], token.pos[1]);
 		} else if
 			(token.type == TokenType.Closure &&
 			token.value == "(")
