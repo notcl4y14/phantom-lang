@@ -26,6 +26,17 @@ class Parser {
 		return prev;
 	}
 
+	public function yumIfThereIsOne(type: TokenType, value: Any): Null<Token> {
+		var prev = this.at();
+
+		if (prev.type != type || prev.value != value) {
+			return null;
+		}
+
+		this.pos += 1;
+		return prev;
+	}
+
 	public function notEOF(): Bool {
 		return this.at().type != TokenType.EOF;
 	}
@@ -41,7 +52,7 @@ class Parser {
 				continue;
 			}
 			
-			var expr = this.parse_expr();
+			var expr = this.parse_stmt();
 			if (expr != null) program.add(expr);
 		}
 
@@ -65,6 +76,48 @@ class Parser {
 		}
 
 		return left;
+	}
+
+	///////////////////////
+
+	public function parse_stmt(): Node {
+		if (this.at().matches(TokenType.Keyword, "let")) {
+			return this.parse_varDeclaration();
+		}
+
+		return this.parse_expr();
+	}
+
+	public function parse_varDeclaration(): Node {
+		var keyword = this.yum();
+		var ident = this.parse_primaryExpr();
+
+		if (!(ident is Identifier)) {
+			throw new Error("Expected an identifier", ident.pos);
+		}
+
+		if (!this.at().matches(TokenType.Operator, "=")) {
+			var ident = cast (ident, Identifier);
+	
+			return new VarDeclaration(ident, new Literal("null"))
+				.setPos(keyword.pos[0], this.at().pos[1]);
+		}
+
+		this.yum();
+
+		var _ident = cast (ident, Identifier);
+		var value = this.parse_expr();
+		var semicolon = this.yumIfThereIsOne(TokenType.Symbol, ";");
+
+		// var rightPos = (semicolon == null ? value : semicolon).pos[1];
+		var rightPos = value.pos[1];
+
+		if (semicolon != null) {
+			rightPos = semicolon.pos[1];
+		}
+
+		return new VarDeclaration(_ident, value)
+			.setPos(keyword.pos[0], rightPos);
 	}
 
 	///////////////////////

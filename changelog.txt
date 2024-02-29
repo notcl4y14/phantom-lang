@@ -3,6 +3,18 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 2/25/2024 - 2/29/2024
+- Created Scope.hx
+- Added Var Declaration to interpreter
+- Added CLI parameter "--scope"
+	+ Outputs the scope
+------------
+------------
+- Added Var Declaration statement
+------------
+------------
+- Added Parser.parse_varDeclaration()
+
 // 2/19/2024 - 2/22/2024
 - Added more value types
 	+ BooleanValue (boolean)

@@ -45,12 +45,6 @@ class Main {
 	///////////////////////
 	
 	public function new() {
-		// Sys.println("Hello World!");
-		// var token = new Token(TokenType.Operator, "+");
-		// Sys.println("Tokens ---------------------------------");
-		// Sys.println(token.string());
-		// Sys.println("----------------------------------------");
-		// this.outputResult("Tokens", [token.string()]);
 		var args = Sys.args();
 		var filename = args[0];
 		var code = this.readFile(filename);
@@ -79,16 +73,18 @@ class Main {
 			this.outputResult("AST", [ast.string()]);
 		}
 
+		var scope = new Scope();
 		var interpeter = new Interpreter();
 		var result: Value = null;                // For compiler
-		try { result = interpeter.eval(ast); }
+		try { result = interpeter.eval(ast, scope); }
 		catch (e: source.Error) { Sys.println(e.string()); Sys.exit(1); }
 
 		if (args.contains("--eval-value") && result != null) {
-			// For compiler
-			// try {
 			this.outputResult("Evaluated value", [result.string()]);
-			// } catch(e) {}
+		}
+
+		if (args.contains("--scope")) {
+			this.outputResult("Scope", [scope.string()]);
 		}
 	}
 

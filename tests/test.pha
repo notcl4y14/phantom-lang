@@ -1,6 +1,3 @@
-// 10 + "lol"
-// true
-// false
-// null
-// "a " + "lol" + ";"
-10 + 4
+let x = 5;
+let y = 10;
+let str = "lol";
