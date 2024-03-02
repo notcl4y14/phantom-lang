@@ -122,8 +122,21 @@ class Parser {
 
 	///////////////////////
 
-	public function parse_expr() {
-		return this.parse_compExpr();
+	public function parse_expr(): Node {
+		return this.parse_assignmentExpr();
+	}
+
+	public function parse_assignmentExpr() {
+		var left = this.parse_compExpr();
+
+		if (this.at().type == TokenType.Operator && StringTools.contains(this.at().value, "=")) {
+			var op = this.yum();
+			var value = this.parse_expr();
+
+			left = new VarAssignment(cast (left, Identifier), op, value).setPos(left.pos[0], value.pos[1]);
+		}
+
+		return left;
 	}
 	
 	///////////////////////
@@ -170,6 +183,8 @@ class Parser {
 			this.yum();
 
 			return value;
+		} else if (token.matches(TokenType.Symbol, ";")) {
+			return null;
 		}
 
 		throw new source.Error('Unexpected token "${token.value}"', token.pos);

@@ -5,14 +5,16 @@ import source.nodes.*;
 
 class Interpreter {
 	public function new() {}
-	public function eval(node: Node, scope: Scope): Value {
-		// var type = Type.typeof(node);
+	public function eval(node: Node, scope: Scope, ignoreVarError: Bool = false): Value {
+		// Sys.println(node.string());
 		
 		// Values
 		if (node is NumericLiteral) {
 			return new NumberValue(cast (node, NumericLiteral).value);
+
 		} else if (node is StringLiteral) {
 			return new StringValue(cast (node, StringLiteral).value);
+
 		} else if (node is Literal) {
 			var node = cast (node, Literal);
 			
@@ -21,6 +23,19 @@ class Interpreter {
 			}
 
 			return new BooleanValue(node.value == "true");
+
+		} else if (node is Identifier) {
+			var node = cast (node, Identifier);
+			var _var = scope.lookup(node.value);
+
+			// Yes, it looks like it needs a cleanup
+			if (_var == null && !ignoreVarError) {
+				throw new Error('${node.value} does not exist in the current scope', node.pos);
+			} else if (ignoreVarError) {
+				return new NullValue();
+			}
+
+			return _var;
 		}
 		
 		// Misc.
@@ -34,6 +49,10 @@ class Interpreter {
 		}
 
 		// Expressions
+		else if (node is VarAssignment) {
+			return this.evalVarAssignment(cast (node, VarAssignment), scope);
+		}
+		
 		else if (node is BinaryExpr) {
 			return this.evalBinaryExpr(cast (node, BinaryExpr), scope);
 		}
@@ -73,6 +92,17 @@ class Interpreter {
 	  /////////////////
 	 // Expressions //
 	/////////////////
+
+	public function evalVarAssignment(expr: VarAssignment, scope: Scope): Value {
+		var value = this.eval(expr.value, scope);
+		var _var = scope.assign(expr.varname.value, value);
+
+		if (_var == null) {
+			throw new Error('"${expr.varname.value}" does not exist in the current scope', expr.varname.pos);
+		}
+
+		return _var;
+	}
 	
 	public function evalBinaryExpr(expr: BinaryExpr, scope: Scope): Value {
 		var left = this.eval(expr.left, scope);

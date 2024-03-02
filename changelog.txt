@@ -3,6 +3,10 @@
 // https://github.com/notcl4y14/phantom-lang
 // --------------------------------------------------------
 
+// 3/2/2024
+- Created Var Assignment expression
+- Added getting variable value
+
 // 2/25/2024 - 2/29/2024
 - Created Scope.hx
 - Added Var Declaration to interpreter
